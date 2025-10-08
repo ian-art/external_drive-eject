@@ -35,9 +35,10 @@ if '%1'=='ELEV' (del "%vbsGetPrivileges%" 1>nul 2>nul & shift /1)
 set "ejdbat=%windir%\System32\EjectDrive.bat"
 set "ejdvbs=%windir%\System32\EjectDrive.vbs"
 set "pscmd=%windir%\System32\ps.cmd"
+set "rdexe=%windir%\System32\rd.exe"
 
 :: --- safer: don’t delete rd.exe unless you *really* want to ---
-set "targets=%ejdbat% %ejdvbs% %pscmd%"
+set "targets=%ejdbat% %ejdvbs% %pscmd% %rdexe%"
 
 echo === Target files ===
 for %%T in (%targets%) do echo %%~fT
@@ -65,17 +66,24 @@ for %%F in (%targets%) do (
             echo [✓] Deleted: %%~nxF
         )
     ) else (
+	
         echo [i] Not found: %%~nxF
+		goto end
     )
 )
 
 :: Delete the command subkey first (if present)
-reg delete "HKCR\Drive\shell\EjectDrive\command" /f
-:: Then delete the parent key
-reg delete "HKCR\Drive\shell\EjectDrive" /f
+reg query "HKCR\Drive\shell\EjectDrive\command" >nul 2>&1 && (
+    reg delete "HKCR\Drive\shell\EjectDrive\command" /f
+)
+:: Then delete the parent key (if present)
+reg query "HKCR\Drive\shell\EjectDrive" >nul 2>&1 && (
+    reg delete "HKCR\Drive\shell\EjectDrive" /f
+)
 
-echo Done.
 echo To refresh Explorer shell context menus, log off/on or restart Explorer.
+:end
+echo Done.
 endlocal
 pause
 exit /b 0
