@@ -1,0 +1,8 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\Drive\shell\EjectDrive]
+@="Eject Drive"
+"Icon"="imageres.dll,-5314"
+
+[HKEY_CLASSES_ROOT\Drive\shell\EjectDrive\command]
+@="wscript.exe \"C:\\Windows\\System32\\EjectDrive.vbs\" \"%1\""

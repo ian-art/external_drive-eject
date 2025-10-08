@@ -1,0 +1,2 @@
+@echo off
+powershell -NoProfile -Command "$partition = Get-Partition | Where-Object DriveLetter -eq '%~1'; $disk = Get-PhysicalDisk | Where-Object DeviceID -eq $partition.DiskNumber; '{0},{1},{2}' -f $disk.MediaType, $disk.BusType, $disk.Size | Out-File -encoding utf8 '%~2'"
