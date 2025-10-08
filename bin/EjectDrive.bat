@@ -104,8 +104,11 @@ cd /d "%SystemRoot%\system32"
 echo select volume %drivepath% >"%tempfile%"
 echo offline disk >>"%tempfile%"
 echo online disk >>"%tempfile%"
+echo exit >> "%diskpart%"
 diskpart /s "%tempfile%" | findstr /C:"not valid"
-taskkill /F /IM diskpart.exe >nul
+tasklist /fi "imagename eq dism.exe" | find /i "dism.exe" >nul 2>&1 && (
+    taskkill /f /im diskpart.exe
+)
 del "%tempfile%" /F /Q >nul
 
 "%removedrive%" %drivepath% -e -f -i -L 1>NUL 2>NUL
